@@ -1,0 +1,40 @@
+﻿@model ECommerce1.Models.SubCategoryAdd
+@{
+    ViewBag.Title = "SubAdd_Category";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+@using (Html.BeginForm("SubAdd_Category", "Admin", FormMethod.Post))
+{
+
+    <div class="card">
+        <div class="card-header">
+            Sub Category Add
+        </div>
+        <div class="card-body">
+            <label>Category</label>
+            @Html.HiddenFor(m => m.Sid)
+
+
+            @Html.DropDownListFor(m=>m.Cid, ViewData["dropfill"]  as List<SelectListItem> , new { @class = "form-control" })
+
+            <label>SubCategory</label>
+
+            @Html.TextBoxFor(m => m.SubCategory, new { @class = "form-control" })
+            <label>Status</label>
+            @Html.DropDownListFor(m => m.Status, new List<SelectListItem>()
+               {
+                   new SelectListItem {Text="Active",Value="1" },
+                   new SelectListItem {Text="Deactive",Value="0" }
+
+
+               }, new { @class = "form-control" })
+            <div class="form-group  text-center " style="margin:20px;">
+                <input type="submit" class="btn  btn-success" value="Save" id="save" />
+                <input type="submit" class="btn text-center btn-danger" value="Cancel" id="save" />
+
+
+            </div>
+        </div>
+    </div>
+}

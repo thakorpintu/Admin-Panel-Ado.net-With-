@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ECommerce1.Models.SubCategoryAdd>
+@{
+    ViewBag.Title = "SubCategoryList";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        CategoryList
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered text-center table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Category</th>
+                    <th>SubCategory</th>
+                    <th>Status</th>
+                    <th>UpdateOn</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in Model)
+                {
+                    <tr>
+                        <td>@data.Sid</td>
+                        <td>@data.CategoryName</td>
+                        <td>@data.SubCategory</td>
+                        <td>@data.Status</td>
+                        <td>@data.UpdateOn</td>
+                        <td>
+                            @Html.ActionLink(".", "SubAdd_Category/", new { sid = data.Sid }, new { @class = "fas fa-edit btn btn-success" })
+                        <a class="btn btn-danger" href="@Url.Action("CategoryDelete/"+data.Sid,"Admin")" onclick="return confirm('Are You Sure Want to Delete Data?')">Delete</a>
+                    </td>
+
+                    </tr>
+                }
+                
+            </tbody>
+        </table>
+    </div>
+</div>
+

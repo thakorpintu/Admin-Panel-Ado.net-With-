@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ECommerce1.Models.Category_Model>
+@{
+    ViewBag.Title = "CategoryList";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+<h2>CategoryList</h2>
+
+
+
+<div class="card">
+    <div class="card-header">
+        CategoryList
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered text-center table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>UpdateOn</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in Model)
+                {
+
+                      <tr>
+                            <td>@data.Cid</td>
+                            <td>@data.Category</td>
+                            <td>@data.Status</td>
+                            <td>
+                                @*<a href="@Url.Action("AddCategory/", "Admin", new { cid = data.Cid })}">Edit</a>*@
+                                @*<a class="far fa-trash-alt btn btn-danger " href="@Url.Action("AddCategory/"+data.Cid,"Admin")" ></a>*@
+
+                                @Html.ActionLink(".", "AddCategory/", new { cid = data.Cid } ,new { @class = "fas fa-edit btn btn-success" }) 
+                            </td>
+                            <td>
+                                <a class="far fa-trash-alt btn btn-danger " href="@Url.Action("CategoryDelete/"+data.Cid,"Admin")" onclick="return confirm('Are You Sure Want to Delete Data?')"></a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+

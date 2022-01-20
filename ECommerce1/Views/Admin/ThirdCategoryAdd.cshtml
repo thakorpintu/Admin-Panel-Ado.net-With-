@@ -1,0 +1,178 @@
+﻿@model ECommerce1.Models.ThirdCategoryModel
+@{
+    ViewBag.Title = "ThirdCategoryAdd";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+@using (Html.BeginForm("ThirdCategoryAdd", "Admin", FormMethod.Post))
+{
+   
+
+    <div class="form-group">
+
+        <h1>Category</h1>
+        <div class="card">
+            @if (ViewBag.msg != null)
+            {
+                <script>
+                    alert("@ViewBag.msg")
+                </script>
+            }
+
+
+            <div class="card">
+                <div class="card-header">
+                    Third Category Add
+                </div>
+                <div class="card-body">
+                    <label id="demo">Category</label>
+                    @Html.HiddenFor(m => m.Tid)
+                    @Html.HiddenFor(m => m.Sid)
+
+
+                    @Html.DropDownListFor(m => m.Cid, ViewData["Catdrop"] as List<SelectListItem>, new { onchange = "DropCat(this)", @class = "form-control" })
+
+                    <label>SubCategory</label>
+                    @Html.DropDownListFor(m => m.SubCategory, new List<SelectListItem>() { new SelectListItem { Text = "---select Subcategory---", Value = "0" } }, new { @class = "form-control" })
+                    @*<select id="scat" class="form-control"></select>*@
+
+
+                    <label>ThirdCategory</label>
+
+                    @Html.TextBoxFor(m => m.ThirdCategory, new { @class = "form-control" })
+                    <label>Status</label>
+                    @Html.DropDownListFor(m => m.Status, new List<SelectListItem>()
+               {
+                   new SelectListItem {Text="Active",Value="1" },
+                   new SelectListItem {Text="Deactive",Value="0" }
+
+
+               }, new { @class = "form-control" })
+                    <div class="form-group  text-center " style="margin:20px;">
+                        <input type="button" onclick="savedata()" class="btn  btn-success" value="Save" id="save" />
+                        <input type="submit" class="btn text-center btn-danger" value="Cancel" id="save" />
+
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    @section Javascript
+        {
+        <script type="text/javascript">
+
+            window.onload = function () {
+                debugger
+                var cid = Cid.value;
+                var sid = Sid.value;
+
+
+                SubCategoryFilll(cid)
+            }
+
+            function SubCategoryFilll(sid) {
+
+                
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("Subdrop")',
+                    data: '{cid: ' + sid + '}',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        //dropsubcategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+                        debugger
+                        for (var i = 0; i < retdata.length; i++) {
+
+                            var op = document.createElement("option");
+                            if(sid==retdata[i].Value)
+                            {
+                                op.setAttribute("selected", "selected");
+                            }
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            SubCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+                        debugger
+                    }
+
+                }
+
+
+                    )
+            };
+
+            function DropCat(Catdrop) {
+                var cid = JSON.stringify(Catdrop.value);
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("Subcat")',
+                    data: '{cid: ' + cid + '}',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        //dropsubcategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+                        for (var i = 0; i < retdata.length; i++) {
+                            var op = document.createElement("option");
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            SubCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+
+                    }
+
+                }
+
+
+                    )
+            };
+            function savedata() {
+                debugger
+                var cid = Cid.value;
+                var sid = SubCategory.value;
+                var thirdcat = ThirdCategory.value;
+                var st = Status.value;
+                var tid = Tid.value;
+
+
+                alert(cid);
+                var model = {
+                    Cid: cid,
+                    Sid: sid,
+                    ThirdCategory: thirdcat,
+                    Status: st,
+                    Tid: tid
+
+                };
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("ThirdCategoryAdd")',
+                    data: JSON.stringify(model),
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        console.log(retdata);
+
+                    }
+
+                })
+
+
+
+            }
+        </script>
+    }
+
+
+}
+

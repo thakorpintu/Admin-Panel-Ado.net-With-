@@ -1,0 +1,97 @@
+﻿@model IEnumerable<ECommerce1.Models.ProductModel>
+@{
+    ViewBag.Title = "ProductList";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        CategoryList
+    </div>
+    <div class="card-body">
+        <table id="mytable" class="table  table-bordered text-center table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>Pid</th>
+                    <th>Category</th>
+                    <th>SubCategory</th>
+                    <th>ThirdCategory</th>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Product Color</th>
+                    <th>Description</th>
+                    <th>Images</th>
+                    <th>Action
+                    <th>
+
+
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+@section Javascript {
+    <script type="text/javascript">
+        debugger
+        $(document).ready(function () {
+            $.ajax({
+                type: "Post",
+                url: '@Url.Action("ProductList")',
+                data: {},
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (retdata) {
+
+                    console.log(retdata);
+                    var tbody = $("#mytable>tbody");
+                    debugger
+                    for (var i = 0; i < retdata.length; i++) {
+                        tbody.append('<tr>' +
+
+                        '<td>' + retdata[i].Pid + '</td>' +
+                        '<td>' + retdata[i].Category + '</td>' +
+                        '<td>' + retdata[i].SubCategory + '</td>' +
+                        '<td>' + retdata[i].ThirdCategory + '</td>' +
+                        '<td>' + retdata[i].ProductName + '</td>' +
+                        '<td>' + retdata[i].ProductPrice + '</td>' +
+                        '<td>' + retdata[i].ProductColor + '</td>' +
+                        '<td>' + retdata[i].Description + '</td>' +
+                        '<td> <img src="'+ retdata[i].Image.replace('~', '') +'" height="100px"   width="100px" /> </td>' +
+                        '<td style="display: flex;"> <a href="/Admin/ProductAdd/?data=' + retdata[i].Pid + '"  style="    margin-right: 3px;"     class = "fas fa-edit btn btn-success"   ></a>   <a href="/Admin/ProductDelete/?data=' + retdata[i].Pid + '" class = "far fa-trash-alt btn btn-danger"   ></a> </td>' +
+
+
+                        +'</tr>');
+
+                    }
+
+                    if (retdata == 1) {
+                        alert("successfully added");
+                    }
+                    else if (retdata == 2) {
+                        alert("successfully Update Data");
+
+                    }
+                    else if (retdata == 3) {
+                        alert("successfully All Redy Exists Product");
+
+
+                    }
+                    else if (retdata == 0) {
+                        alert("successfully Succefully Delete Data");
+
+                    }
+                   
+
+
+
+                    $('#mytable').dataTable();
+
+
+                }
+
+
+            })
+        })
+    </script>
+}

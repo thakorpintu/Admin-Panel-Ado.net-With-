@@ -1,0 +1,50 @@
+﻿@model ECommerce1.Models.Category_Model
+@{
+    ViewBag.Title = "AddCategory";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+@using (Html.BeginForm("AddCategory", "Admin", FormMethod.Post))
+{
+
+
+    <div class="form-group">
+
+        <h1>Category</h1>
+        <div class="card">
+            @if (ViewBag.msg != null)
+            {
+                <script>
+                    alert("@ViewBag.msg")
+                </script>
+            }
+
+
+            <h2>Categories....</h2>
+            <div class="card-header">
+                <div class="card-body ">
+                    <label>Category</label>
+                    @Html.HiddenFor(m => m.Cid)
+                    @Html.TextBoxFor(m => m.Category, new { @class = "form-control" })
+                    <label>Status</label>
+                    @Html.DropDownListFor(m => m.Status, new List<SelectListItem>()
+               {
+                   new SelectListItem {Text="Active",Value="1" },
+                   new SelectListItem {Text="Deactive",Value="0" }
+
+
+               }, new { @class = "form-control" })
+                    <div class="form-group  text-center " style="margin:20px;">
+                        <input type="submit" class="btn  btn-success" value="Save" id="save" />
+                        <input type="submit" class="btn text-center btn-danger" value="Cancel" id="save" />
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+}
+
+
+

@@ -1,0 +1,348 @@
+﻿@model ECommerce1.Models.ProductModel
+@{
+    ViewBag.Title = "ProductAdd";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+@using (Html.BeginForm("ProductAdd", "Admin", FormMethod.Post, new { id = "productform", enctype = "multipart/form-data" }))
+{
+    <div class="form-group">
+
+        <h1>Category</h1>
+        <div class="card">
+            @if (ViewBag.msg != null)
+            {
+                <script>
+                    alert("@ViewBag.msg");
+                </script>
+            }
+
+
+            <div class="card">
+                <div class="card-header">
+                    Product Add
+                </div>
+                <div class="card-body">
+                    <label id="demo">Category</label>
+                    @Html.HiddenFor(m => m.Tid)
+                    @Html.HiddenFor(m => m.Sid)
+                    @Html.HiddenFor(m=>m.Pid)
+
+
+
+                    <label>Category</label>
+
+                    @Html.DropDownListFor(m => m.Cid, ViewData["Catdrop"] as List<SelectListItem>, new { onchange = "DropCat(this)", @class = "form-control" })
+
+
+                    <label>SubCategory</label>
+                    @Html.DropDownListFor(m => m.SubCategory, new List<SelectListItem>() { new SelectListItem { Text = "---select Subcategory---", Value = "0" } }, new { onchange = "DropSub(this)", @class = "form-control" })
+                    <label>ThirdCategory</label>
+                    @Html.DropDownListFor(m => m.ThirdCategory, new List<SelectListItem>(), new { @class = "form-control" })
+                    <label>Product Name</label>
+
+                    @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control" })
+                    <label>Product Color</label>
+                    @Html.TextBoxFor(m => m.ProductColor, new { Type = "color", @class = "form-control" })
+                    <label>Product Price</label>
+
+
+                    @Html.TextBoxFor(m => m.ProductPrice, new { @class = "form-control" })
+                    <label>Product Description</label>
+
+
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+                    <label>Image</label>
+
+
+                    @Html.TextBoxFor(m => m.fileupload, new { Type = "file", @class = "form-control" })
+
+                    @if (ViewBag.imaess != null)
+                    {
+                        <img id="oldimg"  src='@Url.Content(ViewBag.imaess)' height="100" width="150" alt="Alternate Text" />
+
+                    }
+
+
+                    <div class="form-group  text-center " style="margin:20px;">
+                        <input type="button" onclick="productsave()" class="btn  btn-success" value="Save" />
+                        <input type="submit" class="btn text-center btn-danger" value="Cancel" id="save" />
+
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+}
+@section Javascript
+        {
+    <script type="text/javascript">
+        {
+
+            window.onload = function () {
+                debugger
+                var cid = Cid.value;
+                var sid = Sid.value;
+                var pdi = Pid.value;
+                
+                SubCategoryFilll(cid);
+                debugger
+                ThirdCategoryEdit(cid,sid);
+
+            }
+
+
+            function ThirdCategoryEdit(cid, sid) {
+
+
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("ThirdCategoryDrop")',
+                    data: { cid: cid, sid: sid },
+                    dataType: "json",
+                    //contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        //dropsubcategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+                        debugger
+                        for (var i = 0; i < retdata.length; i++) {
+
+                            var op = document.createElement("option");
+                            if (sid == retdata[i].Value) {
+                                op.setAttribute("selected", "selected");
+                            }
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            ThirdCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+                        debugger
+                    }
+
+                })
+            };
+
+
+            function SubCategoryEdit(sid) {
+
+
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("Subdrop")',
+                    data: '{cid: ' + sid + '}',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        //dropsubcategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+                        debugger
+                        for (var i = 0; i < retdata.length; i++) {
+
+                            var op = document.createElement("option");
+                            if (sid == retdata[i].Value) {
+                                op.setAttribute("selected", "selected");
+                            }
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            SubCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+                        debugger
+                    }
+
+                }
+
+
+                    )
+            };
+            function DropCat(Catdrop) {
+                debugger
+                var cid = JSON.stringify(Catdrop.value);
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("Subcat")',
+                    data: '{cid: ' + cid + '}',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        //dropsubcategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+                        for (var i = 0; i < retdata.length; i++) {
+                            var op = document.createElement("option");
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            SubCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+
+                    }
+
+                }
+
+
+                    )
+            };
+
+            function productsave() {
+                debugger
+                var Form = document.getElementById("productform").getAttribute("action");
+                var formdatapage = new FormData();
+                var files = $("#fileupload").get(0).files;
+                var imgs = $('#oldimg').attr('src')
+                console.log(imgs);
+                console.log(files);
+                
+                formdatapage.append("Pid", Pid.value);
+
+                formdatapage.append("Cid", Cid.value);
+                formdatapage.append("SubCategory", SubCategory.value);
+                formdatapage.append("ThirdCategory", ThirdCategory.value);
+                formdatapage.append("ProductName", ProductName.value);
+                formdatapage.append("ProductColor", ProductColor.value);
+                formdatapage.append("ProductPrice", ProductPrice.value);
+                formdatapage.append("Description", Description.value);
+                if (files.length>0)
+                {
+                    formdatapage.append("fileupload", files[0]);
+
+                }
+                else
+                {
+                    formdatapage.append("Image", imgs);
+
+                }
+                console.log(files);
+                console.log(Cid.value);
+                console.log(SubCategory.value);
+                console.log(ThirdCategory.value);
+                console.log(ProductName.value);
+                console.log(ProductColor.value);
+                console.log(ProductPrice.value);
+                console.log(Description.value);
+                console.log(files[0]);
+                $.ajax({
+
+                    type: 'POST',
+                    url: Form,
+                    data: formdatapage,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        debugger
+                        $('#Cid').val("0");
+                        $('#SubCategory').val("0");
+                        $('#ThirdCategory').val("0");
+
+
+                        $('#ProductName').val("");
+                        $('#ProductPrice').val("");
+                        $('#Description').html("");
+
+                        if (response == 1) {
+                            alert("successfully added");
+                        }
+                        else if(response==2)
+                        {
+                            alert("successfully Update");
+
+                        }
+                       else if (response == 3) {
+                           alert("All Redy Exists Product");
+
+                        }
+
+                        else {
+                            alert("Something Went Wrong..");
+                        }
+                    }
+                });
+
+            }
+
+            
+            function SubCategoryFilll(sid) {
+
+
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("Subdrop")',
+                    data: '{cid: ' + sid + '}',
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        //dropsubcategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+                        debugger
+                        for (var i = 0; i < retdata.length; i++) {
+
+                            var op = document.createElement("option");
+                            if (sid == retdata[i].Value) {
+                                op.setAttribute("selected", "selected");
+                            }
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            SubCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+                        debugger
+                    }
+
+                }
+
+
+                    )
+            };
+
+
+
+
+            function DropSub(Catdrop) {
+                debugger
+                var catid = Cid.value;
+                var subid = SubCategory.value;
+
+                debugger
+                $.ajax({
+                    type: "Post",
+                    url: '@Url.Action("ThirdCategoryDrop")',
+                    data: { cid: catid, sid: subid },
+                    dataType: "json",
+                    //contentType: "application/json; charset=utf-8",
+                    success: function (retdata) {
+                        ThirdCategory.innerHTML = "";
+                        //alert("Data Succefully Data Added");
+
+
+                        var op = document.createElement("option");
+                        op.innerHTML = "---Select Third Category---";
+                        op.value = 0;
+                        ThirdCategory.appendChild(op);
+
+                        for (var i = 0; i < retdata.length; i++) {
+                            var op = document.createElement("option");
+                            op.innerHTML = retdata[i].Text;
+                            op.value = retdata[i].Value;
+                            ThirdCategory.appendChild(op);
+                        }
+                        console.log(retdata);
+
+                    }
+
+                }
+
+
+                    )
+            };
+
+
+        }
+    </script>
+}

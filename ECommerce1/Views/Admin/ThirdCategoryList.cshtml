@@ -1,0 +1,65 @@
+﻿@model IEnumerable<ECommerce1.Models.ThirdCategoryModel>
+@{
+    ViewBag.Title = "ThirdCategoryList";
+    Layout = "~/Views/Shared/_AdminMaster.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        CategoryList
+    </div>
+    <div class="card-body" >
+        <table id="mytable" class="table table-bordered text-center table-hover table-responsive">
+            <thead>
+                <tr>
+                    <th>TId</th>
+                    <th>Category</th>
+                    <th>SubCategory</th>
+                    <th>ThirdCategory</th>
+                    <th>Status</th>
+                    <th>UpdateOn</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var data in Model)
+                {
+
+                    <tr>
+                        <td>@data.Tid</td>
+                        <td>@data.CategoryName</td>
+                        <td>@data.SubCategory</td>
+                        <td>@data.ThirdCategory</td>
+                        <td>@data.Status</td>
+                        <td>
+                            @*<a href="@Url.Action("AddCategory/", "Admin", new { cid = data.Cid })}">Edit</a>*@
+                            @*<a class="far fa-trash-alt btn btn-danger " href="@Url.Action("AddCategory/"+data.Cid,"Admin")" ></a>*@
+
+                            @Html.ActionLink(".", "ThirdCategoryAdd/", new { tid = data.Tid }, new { @class = "fas fa-edit btn btn-success" })
+                        </td>
+                        <td>
+                            <a class="far fa-trash-alt btn btn-danger " href="@Url.Action("DeleteThirdCategory/"+data.Tid,"Admin")" onclick="return confirm('Are You Sure Want to Delete Data?')"></a>
+                        </td>
+                    </tr>
+
+                }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    @section Javascript
+                {
+
+        <script type="text/javascript">
+            $(document).ready(function myfunction() {
+                $("mytable").dataTable();
+            });
+        </script>
+
+    }
+
+
+</div>
+           
